@@ -34,7 +34,6 @@ def create_places_database():
 
 # store places function to put places into the databse we initialized
 def store_places(destination, places_data, max_places=25):
-    """Store places in database for future reference"""
     conn = sqlite3.connect('travel.db')
     c = conn.cursor()
     
@@ -48,6 +47,22 @@ def store_places(destination, places_data, max_places=25):
     
     conn.commit()
     conn.close()
+
+# function to show all the places stored in the database
+def show_all_recommendations(destination_coords):
+    conn = sqlite3.connect('travel.db')
+    c = conn.cursor()
+    c.execute("SELECT name, address FROM places WHERE destination=?", (destination_coords,))
+    results = c.fetchall()
+    conn.close()
+    
+    if not results:
+        return "No additional places found in database."
+        
+    output = [f"\nAll stored recommendations near {destination_coords}:"]
+    for name, address in results:
+        output.append(f"- {name}: {address}")
+    return "\n".join(output)
 
 
 def get_places(lat, lon, radius=5000, categories="tourism,entertainment"):
@@ -71,12 +86,12 @@ def get_places(lat, lon, radius=5000, categories="tourism,entertainment"):
         return "No notable tourist spots found nearby."
             
     places_info = []
-    for place in data['features'=][:5]:
+    for place in data['features'][:5]:
         name = place['properties'].get('name', 'Unnamed location')
         categories = ", ".join(place['properties'].get('categories', []))
         address = place['properties'].get('formatted', 'Address not available')
         places_info.append(f"- {name}: {address}")
-    store_places(f"{lat},{lon}", data)
+    store_places(f"{lat},{lon}", data['features'])
         
     return "\n".join(places_info)
 
@@ -108,3 +123,8 @@ lat, lon = map(float, lines[1].strip().split(','))
 print(f"\nTop Tourist/Entertainment Spots in {destination}:")
 places_info = get_places(lat, lon)
 print(places_info)
+
+# if the user wants to see all of the reccomendations from the database
+print("\nType 'all recommendations' to see complete list of recommendations, or press Enter to exit.")
+if input().lower() == 'all recommendations':
+    print(show_all_recommendations(f"{lat},{lon}"))
