@@ -1,5 +1,6 @@
 import os
 import requests
+import sqlite3
 from google import genai
 from google.genai import types
 from dotenv import load_dotenv
@@ -16,6 +17,39 @@ client = genai.Client(
     api_key=my_api_key,
 )
 
+# create database to store all places 
+
+# initialize database
+def create_places_database():
+    conn = sqlite3.connect('travel.db')
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS places
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                  destination TEXT,
+                  name TEXT,
+                  address TEXT,
+                  timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)''')
+    conn.commit()
+    conn.close()
+
+# store places function to put places into the databse we initialized
+def store_places(destination, places_data, max_places=25):
+    """Store places in database for future reference"""
+    conn = sqlite3.connect('travel.db')
+    c = conn.cursor()
+    
+    for place in places_data['features'][:max_places]: 
+        c.execute('''INSERT INTO places 
+                    (destination, name, address)
+                    VALUES (?, ?, ?)''',
+                (destination,
+                 place['properties'].get('name', 'Unnamed location'),
+                 place['properties'].get('formatted', 'Address not available')))
+    
+    conn.commit()
+    conn.close()
+
+
 def get_places(lat, lon, radius=5000, categories="tourism,entertainment"):
     # uses geoapify's places API to fetch places of interest from the tourism and entertainment categories
     base_url = "https://api.geoapify.com/v2/places"
@@ -24,7 +58,7 @@ def get_places(lat, lon, radius=5000, categories="tourism,entertainment"):
         'categories': categories,
         # search within radius of 5000 meters
         'filter': f'circle:{lon},{lat},{radius}', 
-        'limit': 5,
+        'limit': 25,
         'apiKey': geoapify_key
     }
 
@@ -37,15 +71,17 @@ def get_places(lat, lon, radius=5000, categories="tourism,entertainment"):
         return "No notable tourist spots found nearby."
             
     places_info = []
-    for place in data['features']:
+    for place in data['features'=][:5]:
         name = place['properties'].get('name', 'Unnamed location')
         categories = ", ".join(place['properties'].get('categories', []))
         address = place['properties'].get('formatted', 'Address not available')
         places_info.append(f"- {name}: {address}")
+    store_places(f"{lat},{lon}", data)
         
     return "\n".join(places_info)
-    
 
+# call database when func starts
+create_places_database()
 
 # Get user input from terminal
 user_query = input("Please enter details about your dream travel destination!\nFeel free to include: \n-Budget \n-Where you are traveling from + Max distance \n-Interests (beaches, hiking, trying new foods)\n")
