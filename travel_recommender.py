@@ -33,11 +33,12 @@ def create_places_database():
     conn.close()
 
 # store places function to put places into the databse we initialized
-def store_places(destination, places_data, max_places=25):
+def store_places(destination, places_data, max_places):
     conn = sqlite3.connect('travel.db')
     c = conn.cursor()
+    max_places = 25 
     
-    for place in places_data['features'][:max_places]: 
+    for place in places_data[:max_places]: 
         c.execute('''INSERT INTO places 
                     (destination, name, address)
                     VALUES (?, ?, ?)''',
@@ -77,7 +78,6 @@ def get_places(lat, lon, radius=5000, categories="tourism,entertainment"):
         'apiKey': geoapify_key
     }
 
-
     response = requests.get(base_url, params=params)
     response.raise_for_status()
     data = response.json()
@@ -91,7 +91,7 @@ def get_places(lat, lon, radius=5000, categories="tourism,entertainment"):
         categories = ", ".join(place['properties'].get('categories', []))
         address = place['properties'].get('formatted', 'Address not available')
         places_info.append(f"- {name}: {address}")
-    store_places(f"{lat},{lon}", data['features'])
+    store_places(f"{lat},{lon}", data['features'], 25)
         
     return "\n".join(places_info)
 
@@ -125,6 +125,7 @@ places_info = get_places(lat, lon)
 print(places_info)
 
 # if the user wants to see all of the reccomendations from the database
-print("\nType 'all recommendations' to see complete list of recommendations, or press Enter to exit.")
+print("\nType 'all recommendations' to see complete list of recommendations")
 if input().lower() == 'all recommendations':
     print(show_all_recommendations(f"{lat},{lon}"))
+
