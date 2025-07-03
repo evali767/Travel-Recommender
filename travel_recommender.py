@@ -30,15 +30,26 @@ def get_travel_recommendation(client, user_query):
     )
     return response
 
+def get_lat_lon(response):
+    lines = response.split('\n')
+    destination = lines[0].strip()
+    lat, lon = map(float, lines[1].strip().split(','))
+    return lat, lon
+
+def get_destination(response):
+    lines = response.split('\n')
+    destination = lines[0].strip()
+    return destination
+
 def process_recommendation(response, geoapify_key):
     """Process the AI recommendation and get a list of places of possible interest"""
     print("\nResponse:")
-    print(response.text)
+    response = response.text
+    print(response)
     
     # Get the coordinates from the outputted places and locations
-    lines = response.text.split('\n')
-    destination = lines[0].strip()
-    lat, lon = map(float, lines[1].strip().split(','))
+    destination = get_destination(response)
+    lat, lon = get_lat_lon(response)
     
     # Get and show places of interest to user
     print(f"\nTop Tourist/Entertainment Spots in {destination}:")
@@ -46,6 +57,7 @@ def process_recommendation(response, geoapify_key):
     print(places_info)
     
     return destination
+
 
 def show_previous_recommendations():
     """Show previous recommendations from database"""
