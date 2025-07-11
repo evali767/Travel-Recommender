@@ -1,5 +1,5 @@
 # Travel-Recommender
-CLI based travel recommender created with Python using Google GenAI API and Geoapify Places API
+CLI based travel recommender created with Python using Google Gemini API and Geoapify Places API
 
 
 ### Features
@@ -19,7 +19,7 @@ CLI based travel recommender created with Python using Google GenAI API and Geoa
 
 
 #### Get API Keys
-[Google GenAI API](https://ai.google.dev/gemini-api/docs). 
+[Google GenAI API](https://ai.google.dev/gemini-api/docs)   
 [Geoapify Places API](https://apidocs.geoapify.com/docs/places/)
 
 
