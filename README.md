@@ -2,11 +2,11 @@
 CLI based travel recommender created with Python using Google Gemini API and Geoapify Places API
 
 
-### Features
-**Google AI-Powered Destination Suggestions** - Get personalized travel recommendations based on budget, interests, and preferences. 
-**Nearby Tourist Spots** – Automatically fetches top attractions (tourism, entertainment) near the recommended location using Geoapify's Places API. 
-**Database Storage** – Saves all attraction recommendations in a local SQLite database (travel.db) for easy access. 
-**User-Friendly CLI-based Program** – Simple terminal interaction with option to view full recommendations.
+### Features  
+**Google AI-Powered Destination Suggestions** - Get personalized travel recommendations based on budget, interests, and preferences.  
+**Nearby Tourist Spots** – Automatically fetches top attractions (tourism, entertainment) near the recommended location using Geoapify's Places API.  
+**Database Storage** – Saves all attraction recommendations in a local SQLite database (travel.db) for easy access.  
+**User-Friendly CLI-based Program** – Simple terminal interaction with option to view full recommendations. 
 
 
 
@@ -19,7 +19,7 @@ CLI based travel recommender created with Python using Google Gemini API and Geo
 
 
 #### Get API Keys
-[Google GenAI API](https://ai.google.dev/gemini-api/docs)   
+[Google Gemini API](https://ai.google.dev/gemini-api/docs)   
 [Geoapify Places API](https://apidocs.geoapify.com/docs/places/)
 
 
